@@ -22,8 +22,10 @@
       },
       "edgeToEdgeEnabled": true
     },
+    "scheme": "dating-app",
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": ["expo-router"]
   }
 }
