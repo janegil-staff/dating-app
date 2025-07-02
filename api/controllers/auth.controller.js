@@ -23,7 +23,7 @@ export const register = async (req, res, next) => {
     });
 
     //generate the verification token
-    newUser.verificationToken = crypto.randomBytes(20).toString("hex");
+    newUser.verificationToken = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET);
 
     //save the user to the database
     await newUser.save();
