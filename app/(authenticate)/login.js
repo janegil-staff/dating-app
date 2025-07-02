@@ -106,6 +106,7 @@ const login = () => {
               onChangeText={(text) => setEmail(text)}
               placeholder="Enter your email"
               placeholderTextColor={"white"}
+              autoCapitalize="none"
               style={{
                 color: "white",
                 marginVertical: 10,
@@ -137,6 +138,7 @@ const login = () => {
                 value={password}
                 onChangeText={(text) => setPassword(text)}
                 secureTextEntry={true}
+                autoCapitalize="none"
                 placeholder="Enter your password"
                 style={{
                   color: "white",
