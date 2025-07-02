@@ -23,7 +23,10 @@ export const register = async (req, res, next) => {
     });
 
     //generate the verification token
-    newUser.verificationToken = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET);
+    newUser.verificationToken = jwt.sign(
+      { userId: newUser._id },
+      process.env.JWT_SECRET
+    );
 
     //save the user to the database
     await newUser.save();
@@ -46,6 +49,7 @@ export const login = async (req, res, next) => {
 
     //check if the user exists already
     const user = await User.findOne({ email });
+
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
@@ -63,5 +67,27 @@ export const login = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "login failed" });
+  }
+};
+
+export const verify = async (req, res, next) => {
+  try {
+    const token = req.params.token;
+
+    const user = await User.findOne({ verificationToken: token });
+    if (!user) {
+      return res.status(404).json({ message: "Invalid verification token" });
+    }
+
+    //mark the user as verified
+    user.verified = true;
+    user.verificationToken = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: "Email verified Sucesfully" });
+  } catch (error) {
+    console.log("errror", error);
+    res.status(500).json({ message: "Email verification failed" });
   }
 };

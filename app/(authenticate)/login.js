@@ -24,9 +24,10 @@ const login = () => {
       email: email,
       password: password,
     };
-    axios.post("http://localhost:8001/login", user).then((response) => {
-      console.log(response);
+    axios.post("http://localhost:8001/api/auth/login", user).then((response) => {
+   
       const token = response.data.token;
+      console.log(token)
       AsyncStorage.setItem("auth", token);
       router.replace("/(authenticate)/select");
     });
