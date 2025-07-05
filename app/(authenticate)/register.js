@@ -33,9 +33,8 @@ const register = () => {
       .post("http://localhost:8001/api/auth/register", user)
       .then((response) => {
         const token = response.data.token;
-        const user = response.data.user;
         AsyncStorage.setItem("auth", token);
-        AsyncStorage.setItem("user", user);
+
         setName("");
         setEmail("");
         setPassword("");
@@ -153,6 +152,7 @@ const register = () => {
               onChangeText={(text) => setEmail(text)}
               placeholder="Enter your email"
               placeholderTextColor={"white"}
+              autoCapitalize="none"
               style={{
                 color: "white",
                 marginVertical: 10,

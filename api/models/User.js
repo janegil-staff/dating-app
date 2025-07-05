@@ -45,11 +45,7 @@ const userSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
-  profileImages: [
-    {
-      type: String,
-    },
-  ],
+  profileImages: [String],
   description: {
     type: String,
   },

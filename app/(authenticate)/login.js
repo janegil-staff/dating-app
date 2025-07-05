@@ -27,9 +27,8 @@ const login = () => {
     };
     axios.post("http://localhost:8001/api/auth/login", user).then((response) => {
       const token = response.data.token;
-      const user = response.data.user;
       AsyncStorage.setItem("auth", token);
-       AsyncStorage.setItem("user", user);
+
       router.replace("/bio");
     });
   };
