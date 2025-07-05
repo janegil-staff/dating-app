@@ -14,6 +14,7 @@ import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const register = () => {
   const [name, setName] = useState("");
@@ -31,14 +32,14 @@ const register = () => {
     axios
       .post("http://localhost:8001/api/auth/register", user)
       .then((response) => {
-        console.log(response);
-        Alert.alert(
-          "Registration successful",
-          "You have been registered Successfully"
-        );
+        const token = response.data.token;
+        const user = response.data.user;
+        AsyncStorage.setItem("auth", token);
+        AsyncStorage.setItem("user", user);
         setName("");
         setEmail("");
         setPassword("");
+        router.replace("/select");
       })
       .catch((error) => {
         Alert.alert(

@@ -36,7 +36,12 @@ export const register = async (req, res, next) => {
 
     res
       .status(200)
-      .json({ message: "User registered successfully", userId: newUser._id });
+      .json({
+        message: "User registered successfully",
+        userId: newUser._id,
+        token: newUser.verificationToken,
+        user: newUser,
+      });
   } catch (error) {
     console.log("Error registering user", error);
     res.status(500).json({ message: "Registration failed" });
@@ -63,7 +68,7 @@ export const login = async (req, res, next) => {
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
 
-    res.status(200).json({ token });
+    res.status(200).json({ token, user });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "login failed" });

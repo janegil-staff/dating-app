@@ -1,13 +1,18 @@
 import User from "../models/User.js";
 
-export const gender = async (req, res, next) => {
+export const genderAndBirthdate = async (req, res, next) => {
+
+   console.log(req.params);
+    console.log(req.body);
   try {
     const { userId } = req.params;
-    const { gender } = req.body;
+    const { gender, year, month, day } = req.body;
+
+    const date = new Date(year, month - 1, day);
 
     const user = await User.findByIdAndUpdate(
       userId,
-      { gender: gender },
+      { gender: gender, birthdate: date },
       { new: true }
     );
 
@@ -21,3 +26,4 @@ export const gender = async (req, res, next) => {
     res.status(500).json({ message: "Error updating user gender", error });
   }
 };
+

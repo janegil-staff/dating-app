@@ -19,6 +19,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["male", "female", "other"],
   },
+  birthdate: {
+    type: Date,
+  },
   verified: {
     type: Boolean,
     default: false,
