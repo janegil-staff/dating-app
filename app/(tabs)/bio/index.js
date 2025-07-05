@@ -90,12 +90,12 @@ const index = () => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView >
       <View>
         <Image
           style={{ width: "100%", height: 200, resizeMode: "cover" }}
           source={{
-            uri: "https://res.cloudinary.com/dbcdsonhz/image/upload/v1751752988/dating-app/cover_cgnazd.png",
+            uri: "https://static.vecteezy.com/system/resources/thumbnails/018/977/074/original/animated-backgrounds-with-liquid-motion-graphic-background-cool-moving-animation-for-your-background-free-video.jpg",
           }}
         />
         <View style={{ marginBottom: 36 }}>
