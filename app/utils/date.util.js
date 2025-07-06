@@ -1,4 +1,4 @@
-export function getAgeFromDate(dateString) {
+export default function getAgeFromDate(dateString) {
   const today = new Date();
   const birthDate = new Date(dateString);
 

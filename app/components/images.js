@@ -4,22 +4,12 @@ import {
   View,
   ScrollView,
   Image,
-  Pressable,
-  TextInput,
-  Alert,
-  Button,
   Dimensions,
   TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Entypo, AntDesign } from "@expo/vector-icons";
-//import Carousel from "react-native-snap-carousel";
-import axios from "axios";
-//import "core-js/stable/atob";
-import { jwtDecode } from "jwt-decode";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
-import { getAgeFromDate } from "../utils/date.util";
+
 import alert from "../utils/alert.util";
 
 const screenWidth = Dimensions.get("window").width;
