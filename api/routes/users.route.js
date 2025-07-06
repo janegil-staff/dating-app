@@ -4,12 +4,14 @@ import {
   getUser,
   genderAndBirthdate,
   uploadImage,
-  deleteImage
+  deleteImage,
+  updateDescription
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
 router.route("/:userId/gender").put(genderAndBirthdate);
+router.route("/:userId/description").put(updateDescription);
 router.route("/:userId/upload").post(uploadImage);
 router.route("/:userId/delete").post(deleteImage);
 router.route("/:userId").get(getUser);

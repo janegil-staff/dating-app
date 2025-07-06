@@ -10,12 +10,12 @@ import {
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 
-import alert from "../utils/alert.util";
+import alert from "../../utils/alert.util";
 
 const screenWidth = Dimensions.get("window").width;
-const imageSize = (screenWidth - 100) / 3; // 3 columns with 16px padding
+const imageSize = (screenWidth - 90) / 3; // 3 columns with 16px padding
 
-const Images = ({ user, setUser, userId }) => {
+const BioImages = ({ user, setUser, userId }) => {
   const [images, setImages] = useState([]);
 
   const pickImages = async () => {
@@ -134,7 +134,7 @@ const Images = ({ user, setUser, userId }) => {
   );
 };
 
-export default Images;
+export default BioImages;
 
 const styles = StyleSheet.create({
   container: {

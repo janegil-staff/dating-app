@@ -72,7 +72,7 @@ export const deleteImage = async (req, res, next) => {
   const { userId } = req.params;
 
   if (!publicId || !userId) {
-    return res.status(400).json({ error: 'Missing publicId or userId' });
+    return res.status(400).json({ error: "Missing publicId or userId" });
   }
 
   try {
@@ -80,14 +80,42 @@ export const deleteImage = async (req, res, next) => {
     await cloudinary.uploader.destroy(publicId);
 
     // 2. Remove image URL from user's profileImages
-    const imageUrl = `https://res.cloudinary.com/${cloudinary.config().cloud_name}/image/upload/v*/${publicId.replace('dating-app/', '')}`;
+    const imageUrl = `https://res.cloudinary.com/${
+      cloudinary.config().cloud_name
+    }/image/upload/v*/${publicId.replace("dating-app/", "")}`;
     await User.findByIdAndUpdate(userId, {
-      $pull: { profileImages: { $regex: publicId.split('/')[1] } },
+      $pull: { profileImages: { $regex: publicId.split("/")[1] } },
     });
 
     res.json({ success: true });
   } catch (err) {
-    console.error('Error deleting image:', err);
-    res.status(500).json({ error: 'Failed to delete image' });
+    console.error("Error deleting image:", err);
+    res.status(500).json({ error: "Failed to delete image" });
+  }
+};
+
+export const updateDescription = async (req, res, next) => {
+  console.log(req.body);
+  try {
+    const { userId } = req.params;
+    const { description } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        description: description,
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "User description updated succesfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating user description" });
   }
 };

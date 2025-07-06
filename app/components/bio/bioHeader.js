@@ -1,5 +1,5 @@
 import { Text, View, Image, Pressable } from "react-native";
-import getAgeFromDate from "../utils/date.util";
+import getAgeFromDate from "../../utils/date.util";
 
 const BioHeader = ({ user }) => {
   return (
