@@ -45,7 +45,15 @@ const userSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
-  profileImages: [String],
+  profileImages: {
+    type: [String],
+    validate: {
+      validator: function (val) {
+        return val.length <= 6;
+      },
+      message: "You can only upload up to 6 images.",
+    },
+  },
   description: {
     type: String,
   },

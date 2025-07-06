@@ -8,6 +8,8 @@ import {
   TextInput,
   Alert,
   Button,
+  Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Entypo, AntDesign } from "@expo/vector-icons";
@@ -19,15 +21,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { getAgeFromDate } from "../../utils/date.util";
 
+const screenWidth = Dimensions.get("window").width;
+const imageSize = (screenWidth - 100) / 3; // 3 columns with 16px padding
+
 const index = () => {
-  const [option, setOption] = useState("AD");
-  const [description, setDescription] = useState("");
-  const [activeSlide, setActiveSlide] = React.useState(0);
   const [userId, setUserId] = useState("");
-  const [selectedTurnOns, setSelectedTurnOns] = useState([]);
-  const [lookingOptions, setLookingOptions] = useState([]);
-  const [imageUrl, setImageUrl] = useState("");
+
   const [images, setImages] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState([]);
   const [user, setUser] = useState({});
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const index = () => {
 
     fetchUser();
   }, []);
-
+  let displayImages = [];
   const fetchUserDescription = async () => {
     try {
       const response = await axios.get(
@@ -71,6 +72,10 @@ const index = () => {
   };
 
   const uploadImages = async () => {
+    if (images.length >= 6) {
+      Alert.alert("Limit Reached", "You can only upload up to 6 images.");
+      return;
+    }
     const uploads = images.map(async (img) => {
       const res = await fetch(
         `http://localhost:8001/api/users/${userId}/upload`,
@@ -87,10 +92,35 @@ const index = () => {
 
     const results = await Promise.all(uploads);
     console.log("Uploaded:", results);
+    setImages([]);
+  };
+  const handleDelete = async (uri) => {
+    const publicId = getPublicIdFromUrl(uri);
+
+    try {
+      await fetch(`http://localhost:8001/api/users/${userId}/delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ publicId }),
+      });
+
+      // Remove from local state
+      setUser((prev) => ({
+        ...prev,
+        profileImages: prev.profileImages.filter((img) => img !== uri),
+      }));
+    } catch (err) {
+      console.error("Failed to delete image:", err);
+    }
   };
 
+  const getPublicIdFromUrl = (url) => {
+    const parts = url.split("/");
+    const filename = parts[parts.length - 1];
+    return `dating-app/${filename.split(".")[0]}`; // Adjust folder name if needed
+  };
   return (
-    <ScrollView >
+    <ScrollView>
       <View>
         <Image
           style={{ width: "100%", height: 200, resizeMode: "cover" }}
@@ -150,14 +180,35 @@ const index = () => {
                 <Image
                   key={idx}
                   source={{ uri: img.uri }}
-                  style={{ width: 100, height: 100, margin: 5 }}
+                  style={{ width: 100, height: 100, marginBottom: 150 }}
                 />
               ))}
             </ScrollView>
-            <Button title="Upload to Cloudinary" onPress={uploadImages} />
+            <Button title="Upload" onPress={uploadImages} />
           </>
         )}
       </View>
+
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.grid}>
+          {user.profileImages?.map((uri, index) => (
+            <View key={index} style={styles.imageWrapper}>
+              <Image source={{ uri }} style={styles.image} />
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => handleDelete(uri)}
+              >
+                <Text style={styles.deleteText}>×</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+          {user.profileImages?.length < 6 && (
+            <TouchableOpacity style={styles.addButton} onPress={pickImages}>
+              <Text style={styles.plus}>＋</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </ScrollView>
 
       <View style={{ marginHorizontal: 14 }}>
         {/*.
@@ -226,4 +277,55 @@ const index = () => {
 
 export default index;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    backgroundColor: "#fff",
+  },
+  deleteButton: {
+    position: "absolute",
+    top: 4,
+    right: 4,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
+  },
+  deleteText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  image: {
+    width: imageSize,
+    height: imageSize,
+    borderRadius: 10,
+    backgroundColor: "#1e1e1e",
+  },
+  imageWrapper: {
+    position: "relative",
+    width: imageSize,
+    height: imageSize,
+    margin: 4,
+  },
+  addButton: {
+    width: imageSize,
+    height: imageSize,
+    borderRadius: 10,
+    backgroundColor: "#2a2a2a",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  plus: {
+    fontSize: 32,
+    color: "#888",
+  },
+});

@@ -42,7 +42,6 @@ export const genderAndBirthdate = async (req, res, next) => {
 };
 
 export const uploadImage = async (req, res, next) => {
-
   try {
     const { userId } = req.params;
     const { image } = req.body;
@@ -66,5 +65,30 @@ export const uploadImage = async (req, res, next) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Upload failed" });
+  }
+};
+
+export const deleteImage = async (req, res, next) => {
+  const { publicId } = req.body;
+  const { userId } = req.params;
+  
+  if (!publicId || !userId) {
+    return res.status(400).json({ error: 'Missing publicId or userId' });
+  }
+
+  try {
+    // 1. Delete from Cloudinary
+    await cloudinary.uploader.destroy(publicId);
+
+    // 2. Remove image URL from user's profileImages
+    const imageUrl = `https://res.cloudinary.com/${cloudinary.config().cloud_name}/image/upload/v*/${publicId.replace('dating-app/', '')}`;
+    await User.findByIdAndUpdate(userId, {
+      $pull: { profileImages: { $regex: publicId.split('/')[1] } },
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Error deleting image:', err);
+    res.status(500).json({ error: 'Failed to delete image' });
   }
 };

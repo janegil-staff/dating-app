@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 app.use(cors())
 
-app.use(express.json({ extended: false, limit: '3000kb' }));
+app.use(express.json({ extended: false, limit: '30000kb' }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", routes);
