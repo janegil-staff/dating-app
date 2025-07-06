@@ -46,7 +46,6 @@ export const uploadImage = async (req, res, next) => {
     const { userId } = req.params;
     const { image } = req.body;
 
-    console.log(userId);
     if (!image || !userId) {
       return res.status(400).json({ error: "Missing image or userId" });
     }
@@ -71,7 +70,7 @@ export const uploadImage = async (req, res, next) => {
 export const deleteImage = async (req, res, next) => {
   const { publicId } = req.body;
   const { userId } = req.params;
-  
+
   if (!publicId || !userId) {
     return res.status(400).json({ error: 'Missing publicId or userId' });
   }
