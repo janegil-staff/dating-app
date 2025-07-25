@@ -1,16 +1,23 @@
 import { Alert, Platform } from "react-native";
 
-const alertPolyfill = (title, message, buttons = [{ text: "OK" }]) => {
-  const result = window.confirm([title, message].filter(Boolean).join("\n"));
-  if (result) {
-    const confirm = buttons.find((b) => b.style !== "cancel");
-    confirm?.onPress?.();
+const alert = (title, message = "", buttons = [{ text: "OK" }]) => {
+  if (Platform.OS === "web") {
+    const result = window.confirm(
+      [title, message].filter(Boolean).join("\n\n")
+    );
+
+    if (result) {
+      // Simulate pressing a non-cancel button
+      const nonCancel = buttons.find((b) => b.style !== "cancel");
+      nonCancel?.onPress?.();
+    } else {
+      // Simulate pressing cancel
+      const cancel = buttons.find((b) => b.style === "cancel");
+      cancel?.onPress?.();
+    }
   } else {
-    const cancel = buttons.find((b) => b.style === "cancel");
-    cancel?.onPress?.();
+    Alert.alert(title, message, buttons);
   }
 };
-
-const alert = Platform.OS === "web" ? alertPolyfill : Alert.alert;
 
 export default alert;

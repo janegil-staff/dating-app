@@ -8,29 +8,45 @@ import {
   TextInput,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import alert from "../utils/alert.util";
 
 const login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleLogin = () => {
-    const user = {
-      email: email,
-      password: password,
-    };
-    axios.post("http://localhost:8001/api/auth/login", user).then((response) => {
-      const token = response.data.token;
-      AsyncStorage.setItem("auth", token);
+  const handleLogin = async () => {
+    try {
+      const user = { email, password };
 
-      router.replace("/bio");
-    });
+      const response = await axios.post(
+        "http://192.168.1.84:8001/api/auth/login",
+        user
+      );
+
+      const token = response.data.token;
+      console.log("Received token:", token);
+
+      await AsyncStorage.setItem("test", "hello");
+      const check = await AsyncStorage.getItem("test");
+      console.log("Stored test value:", check);
+
+      if (token) {
+        await AsyncStorage.setItem("auth", token);
+        const storedToken = await AsyncStorage.getItem("auth");
+        router.replace("/bio");
+      } else {
+        console.warn("No token returned");
+      }
+    } catch (error) {
+      console.error("Login failed:", error.response?.data || error.message);
+    }
   };
 
   return (
@@ -52,7 +68,6 @@ const login = () => {
             }}
           />
         </View>
-
       </View>
 
       <KeyboardAvoidingView>

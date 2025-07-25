@@ -119,3 +119,111 @@ export const updateDescription = async (req, res, next) => {
     res.status(500).json({ message: "Error updating user description" });
   }
 };
+
+// GET /users?gender=female
+export const usersByGender = async (req, res, next) => {
+  try {
+    const { gender } = req.query;
+    const users = await User.find({ gender });
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export const addTurnOns = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { turnOn } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { turnOns: turnOn } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Turn on updated succesfully", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding the turn on" });
+  }
+};
+
+export const removeTurnOns = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    const { turnOn } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { turnOns: turnOn } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Turn on removed succesfully", user });
+  } catch (error) {
+    return res.status(500).json({ message: "Error removing turn on" });
+  }
+};
+
+export const lookingFor = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { lookingFor } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $addToSet: { lookingFor: lookingFor },
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "No user" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Looking for updated succesfully".user });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating looking for", error });
+  }
+};
+
+export const lookingForRemove = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { lookingFor } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $pull: { lookingFor: lookingFor },
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "No user" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Looking for updated succesfully".user });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing looking for", error });
+  }
+};
