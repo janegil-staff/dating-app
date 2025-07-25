@@ -120,7 +120,7 @@ export const updateDescription = async (req, res, next) => {
   }
 };
 
-// GET /users?gender=female
+
 export const usersByGender = async (req, res, next) => {
   try {
     const { gender } = req.query;

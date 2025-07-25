@@ -46,6 +46,7 @@ const BioImages = ({ user, setUser, userId }) => {
           }),
         }
       );
+      
       return res.json();
     });
 
